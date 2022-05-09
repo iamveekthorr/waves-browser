@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Devthorr/Documents/AndroidProjects/Wavesbrowser/app/src/main/res/layout/activity_main.xml" value="0.15625" />
+        <entry key="..\:/Users/Devthorr/Documents/AndroidProjects/Wavesbrowser/app/src/main/res/drawable/edit_text.xml" value="0.22870370370370371" />
+        <entry key="..\:/Users/Devthorr/Documents/AndroidProjects/Wavesbrowser/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/Devthorr/Documents/AndroidProjects/Wavesbrowser/app/src/main/res/layout/fragment_toolbar.xml" value="0.2791666666666667" />
+        <entry key="..\:/Users/Devthorr/Documents/AndroidProjects/Wavesbrowser/app/src/main/res/layout/toolbar.xml" value="0.29322916666666665" />
+        <entry key="..\:/Users/Devthorr/Documents/AndroidProjects/Wavesbrowser/app/src/main/res/menu/options.xml" value="0.29322916666666665" />
       </map>
     </option>
   </component>

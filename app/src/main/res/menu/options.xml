@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:icon="@drawable/ic_baseline_more_vert_24"
+        app:showAsAction="always"
+        android:id="@+id/options"
+        android:title="@string/search"
+        android:actionLayout="@layout/activity_main">
+
+        <menu>
+            <item android:id="@+id/new_tab" android:title="@string/new_tab" />
+            <item android:id="@+id/history" android:title="@string/history" />
+            <item android:id="@+id/bookmark" android:title="@string/bookmark" />
+            <item android:id="@+id/settings" android:title="@string/settings" />
+        </menu>
+    </item>
+</menu>
