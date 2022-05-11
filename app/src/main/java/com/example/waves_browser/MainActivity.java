@@ -1,37 +1,43 @@
 package com.example.waves_browser;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.waves_browser.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
     @SuppressWarnings("FieldCanBeLocal")
     private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // using using View Binding.
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         Toolbar toolbar = binding.toolBar;
 
+        setTheme(R.style.Theme_Wavesbrowser);
         setContentView(view);
         setSupportActionBar(toolbar);
 
         // create default settings for app.
         this.doWebSettings();
+
+        // load a page
+        this.loadWebPage(binding.webView);
     }
 
     @Override
@@ -43,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private WebView getWebViewInstance(){
+    private WebView getWebViewInstance() {
         return binding.webView;
     }
 
-    public void doWebSettings(){
+    private void doWebSettings() {
         WebView webView = this.getWebViewInstance();
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new CustomWebViewClient());
         // This allows pages to execute Javascript.
         // this option is dangerous due to XXS attack
         webView.getSettings().setJavaScriptEnabled(true);
@@ -61,15 +67,38 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().supportZoom();
     }
 
-    public void loadWebPage(String url){
-        WebView webView = this.getWebViewInstance();
-        webView.loadUrl(url);
+
+    private String getTextFromEditable(EditText editText) {
+        return editText.getText().toString();
     }
 
 
-    
-    public String getTextFromEditable(EditText editText) {
+    public void loadWebPage(WebView webView) {
         EditText search = binding.editText;
-        return search.getText().toString();
+        search.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String url = this.getTextFromEditable(search);
+                // Check if string carries a domain extension
+                if (this.checkDomainExtension(url)) {
+                    webView.loadUrl(url);
+                    return true;
+                }
+                webView.loadUrl("https://www.google.com/search?q=" + url);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    // Checks if the string has a domain.
+    private boolean checkDomainExtension(String url) {
+        return url.matches("\\b([a-z0-9]+(-[a-z0-9]+)*\\.)+[a-z]{2,}\\b");
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

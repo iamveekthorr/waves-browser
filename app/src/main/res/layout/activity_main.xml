@@ -7,42 +7,49 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool_bar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:popupTheme="@style/Theme.AppCompat.DayNight">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tool_bar"
+        <EditText
+            android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:popupTheme="@style/Theme.AppCompat.DayNight">
+            android:importantForAutofill="no"
+            android:inputType="textUri"
+            android:maxLines="1"
+            android:minHeight="48dp"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="5dp"
+            android:hint="@string/url_placeholder"
+            android:background="@drawable/edit_text"
+            android:imeOptions="actionSearch"/>
 
-            <EditText
-                android:id="@+id/edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:importantForAutofill="no"
-                android:inputType="textUri"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:hint="@string/url_placeholder"/>
+    </androidx.appcompat.widget.Toolbar>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        app:layout_constraintTop_toBottomOf="@id/tool_bar"
+        app:layout_constraintBottom_toTopOf="@id/webView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
 
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
-        android:layout_height="@+id/app_bar"
+        android:layout_height="@+id/tool_bar"
         android:fitsSystemWindows="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar"
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
