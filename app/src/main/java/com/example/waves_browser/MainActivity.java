@@ -1,19 +1,18 @@
 package com.example.waves_browser;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.waves_browser.databinding.ActivityMainBinding;
 
@@ -28,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         Toolbar toolbar = binding.toolBar;
+        binding.progressBar.setVisibility(View.GONE);
 
         setTheme(R.style.Theme_Wavesbrowser);
         setContentView(view);
@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
         // load a page
         this.loadWebPage(binding.webView);
+
+        // refresh page
+        this.handleRefresh(binding.refreshLayout);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void doWebSettings() {
         WebView webView = this.getWebViewInstance();
-        webView.setWebViewClient(new CustomWebViewClient());
+        webView.setWebViewClient(new CustomWebViewClient(binding.progressBar));
         // This allows pages to execute Javascript.
         // this option is dangerous due to XXS attack
         webView.getSettings().setJavaScriptEnabled(true);
@@ -75,15 +78,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadWebPage(WebView webView) {
         EditText search = binding.editText;
+        final String GOOGLE = getString(R.string.google_url);
         search.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String url = this.getTextFromEditable(search);
                 // Check if string carries a domain extension
                 if (this.checkDomainExtension(url)) {
+                    search.setText(url);
+                    this.hideInputMethod();
                     webView.loadUrl(url);
                     return true;
                 }
-                webView.loadUrl("https://www.google.com/search?q=" + url);
+                search.setText(String.format(GOOGLE, url));
+                this.hideInputMethod();
+                webView.loadUrl(String.format(GOOGLE, url));
                 return true;
             }
             return false;
@@ -95,10 +103,17 @@ public class MainActivity extends AppCompatActivity {
         return url.matches("\\b([a-z0-9]+(-[a-z0-9]+)*\\.)+[a-z]{2,}\\b");
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    private void hideInputMethod(){
+        InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(this.getCurrentFocus()
+                .getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    private void handleRefresh(SwipeRefreshLayout refresh){
+        refresh.setOnRefreshListener(() -> {
+            this.loadWebPage(binding.webView);
+            refresh.setRefreshing(false);
+        });
     }
 }
